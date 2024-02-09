@@ -8,7 +8,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const axios = require('axios');
 const UserAgent = require('user-agents');
 /**
  * Takes care about the http connection and response handling
@@ -49,16 +48,16 @@ class HltbSearch {
     detailHtml(gameId, signal) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                let result = yield axios.get(`${HltbSearch.DETAIL_URL}${gameId}`, {
+                let { text: result } = yield requestUrl({
+                    method: 'GET',
                     headers: {
                         'User-Agent': new UserAgent().toString(),
-                        'origin': 'https://howlongtobeat.com',
-                        'referer': 'https://howlongtobeat.com'
+                        'origin': 'https://howlongtobeat.com/',
+                        'referer': 'https://howlongtobeat.com/'
                     },
-                    timeout: 20000,
-                    signal,
-                }).catch(e => { throw e; });
-                return result.data;
+                    url: `${HltbSearch.DETAIL_URL}${gameId}`,
+                });
+                return result;
             }
             catch (error) {
                 if (error) {
@@ -78,18 +77,18 @@ class HltbSearch {
             let search = Object.assign({}, this.payload);
             search.searchTerms = query;
             try {
-                let result = yield axios.post(HltbSearch.SEARCH_URL, search, {
+                let { json: result } = yield requestUrl({
+                    method: 'POST',
                     headers: {
                         'User-Agent': new UserAgent().toString(),
                         'content-type': 'application/json',
                         'origin': 'https://howlongtobeat.com/',
                         'referer': 'https://howlongtobeat.com/'
                     },
-                    timeout: 20000,
-                    signal,
+                    url: HltbSearch.SEARCH_URL,
+                    body: JSON.stringify(search),
                 });
-                // console.log('Result', JSON.stringify(result.data));
-                return result.data;
+                return result;
             }
             catch (error) {
                 if (error) {

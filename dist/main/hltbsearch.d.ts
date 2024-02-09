@@ -1,3 +1,6 @@
+declare global {
+    const requestUrl: any;
+}
 /**
  * Takes care about the http connection and response handling
  */

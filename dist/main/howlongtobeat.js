@@ -36,7 +36,7 @@ class HowLongToBeatService {
             for (const resultEntry of search.data) {
                 hltbEntries.push(new HowLongToBeatEntry('' + resultEntry.game_id, // game id is now a number, but I want to keep the model stable
                 resultEntry.game_name, '', // no description
-                resultEntry.profile_platform ? resultEntry.profile_platform.split(', ') : [], hltbsearch_1.HltbSearch.IMAGE_URL + resultEntry.game_image, [["Main", "Main"], ["Main + Extra", "Main + Extra"], ["Completionist", "Completionist"]], Math.round(resultEntry.comp_main / 3600), Math.round(resultEntry.comp_plus / 3600), Math.round(resultEntry.comp_100 / 3600), HowLongToBeatService.calcDistancePercentage(resultEntry.game_name, query), query));
+                resultEntry.profile_platform ? resultEntry.profile_platform.split(', ') : [], hltbsearch_1.HltbSearch.IMAGE_URL + resultEntry.game_image, [["Main", "Main"], ["Main + Extra", "Main + Extra"], ["Completionist", "Completionist"]], Math.round(resultEntry.comp_main / 3600), Math.round(resultEntry.comp_plus / 3600), Math.round(resultEntry.comp_100 / 3600), HowLongToBeatService.calcDistancePercentage(resultEntry.game_name, query), query, resultEntry.release_world));
             }
             return hltbEntries;
         });
@@ -73,7 +73,7 @@ exports.HowLongToBeatService = HowLongToBeatService;
 class HowLongToBeatEntry {
     constructor(id, name, description, 
     /* replaces playableOn */
-    platforms, imageUrl, timeLabels, gameplayMain, gameplayMainExtra, gameplayCompletionist, similarity, searchTerm) {
+    platforms, imageUrl, timeLabels, gameplayMain, gameplayMainExtra, gameplayCompletionist, similarity, searchTerm, releaseYear) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -85,6 +85,7 @@ class HowLongToBeatEntry {
         this.gameplayCompletionist = gameplayCompletionist;
         this.similarity = similarity;
         this.searchTerm = searchTerm;
+        this.releaseYear = releaseYear;
         this.playableOn = platforms;
     }
 }
@@ -145,7 +146,7 @@ class HowLongToBeatParser {
             }
             else if (type.startsWith('Completionist') || type.startsWith('Vs.')) {
                 gameplayComplete = time;
-                timeLabels.push(['gameplayComplete', type]);
+                timeLabels.push(['gameplayCompletionist', type]);
             }
         });
         return new HowLongToBeatEntry(id, gameName, gameDescription, platforms, imageUrl, timeLabels, gameplayMain, gameplayMainExtra, gameplayComplete, 1, gameName);
