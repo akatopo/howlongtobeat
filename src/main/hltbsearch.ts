@@ -1,4 +1,7 @@
-const axios: any = require('axios');
+declare global {
+  const requestUrl: any;
+}
+
 const UserAgent: any = require('user-agents');
 
 
@@ -46,17 +49,16 @@ export class HltbSearch {
 
   async detailHtml(gameId: string, signal?: AbortSignal): Promise<string> {
     try {
-      let result =
-        await axios.get(`${HltbSearch.DETAIL_URL}${gameId}`, {
-          headers: {
-            'User-Agent': new UserAgent().toString(),
-            'origin': 'https://howlongtobeat.com',
-            'referer': 'https://howlongtobeat.com'
-          },
-          timeout: 20000,
-          signal,
-        }).catch(e => { throw e; });
-      return result.data;
+      let { text: result } = await requestUrl({
+        method: 'GET',
+        headers: {
+          'User-Agent': new UserAgent().toString(),
+          'origin': 'https://howlongtobeat.com/',
+          'referer': 'https://howlongtobeat.com/'
+        },
+        url: `${HltbSearch.DETAIL_URL}${gameId}`,
+      });
+      return result;
     } catch (error) {
       if (error) {
         throw new Error(error);
@@ -73,19 +75,18 @@ export class HltbSearch {
     let search = { ...this.payload };
     search.searchTerms = query;
     try {
-      let result =
-        await axios.post(HltbSearch.SEARCH_URL, search, {
-          headers: {
-            'User-Agent': new UserAgent().toString(),
-            'content-type': 'application/json',
-            'origin': 'https://howlongtobeat.com/',
-            'referer': 'https://howlongtobeat.com/'
-          },
-          timeout: 20000,
-          signal,
-        });
-      // console.log('Result', JSON.stringify(result.data));
-      return result.data;
+      let { json: result } = await requestUrl({
+        method: 'POST',
+        headers: {
+          'User-Agent': new UserAgent().toString(),
+          'content-type': 'application/json',
+          'origin': 'https://howlongtobeat.com/',
+          'referer': 'https://howlongtobeat.com/'
+        },
+        url: HltbSearch.SEARCH_URL,
+        body: JSON.stringify(search),
+      });
+      return result;
     } catch (error) {
       if (error) {
         throw new Error(error);
