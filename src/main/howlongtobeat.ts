@@ -42,7 +42,8 @@ export class HowLongToBeatService {
         Math.round(resultEntry.comp_plus / 3600),
         Math.round(resultEntry.comp_100 / 3600),
         HowLongToBeatService.calcDistancePercentage(resultEntry.game_name, query),
-        query
+        query,
+        resultEntry.release_world
       ));
     }
     return hltbEntries;
@@ -93,7 +94,8 @@ export class HowLongToBeatEntry {
     public readonly gameplayMainExtra: number,
     public readonly gameplayCompletionist: number,
     public readonly similarity: number,
-    public readonly searchTerm: string
+    public readonly searchTerm: string,
+    public readonly releaseYear?: number
   ) {
     this.playableOn = platforms;
   }
