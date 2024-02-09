@@ -163,7 +163,7 @@ export class HowLongToBeatParser {
         timeLabels.push(['gameplayMainExtra', type]);
       } else if (type.startsWith('Completionist') || type.startsWith('Vs.')) {
         gameplayComplete = time;
-        timeLabels.push(['gameplayComplete', type]);
+        timeLabels.push(['gameplayCompletionist', type]);
       }
     });
 
