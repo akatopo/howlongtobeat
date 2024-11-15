@@ -98,7 +98,6 @@ class HltbSearch {
                 if (!token1 || !token2) {
                     throw new Error('Error in matching the search token from the app source');
                 }
-                debugger;
                 return `${token1}${token2}`;
             }
             catch (error) {
