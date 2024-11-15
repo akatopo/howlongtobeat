@@ -11,5 +11,6 @@ export declare class HltbSearch {
     static IMAGE_URL: string;
     payload: any;
     detailHtml(gameId: string, signal?: AbortSignal): Promise<string>;
+    getSearchToken(): Promise<string>;
     search(query: Array<string>, signal?: AbortSignal): Promise<any>;
 }
