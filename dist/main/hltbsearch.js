@@ -26,13 +26,18 @@ class HltbSearch {
                     "sortCategory": "popular",
                     "rangeCategory": "main",
                     "rangeTime": {
-                        "min": 0,
-                        "max": 0
+                        "min": null,
+                        "max": null
                     },
                     "gameplay": {
                         "perspective": "",
                         "flow": "",
-                        "genre": ""
+                        "genre": "",
+                        "difficulty": ""
+                    },
+                    "rangeYear": {
+                        "min": "",
+                        "max": ""
                     },
                     "modifier": ""
                 },
@@ -94,7 +99,7 @@ class HltbSearch {
                     headers,
                     url: `${HltbSearch.BASE_URL}${appUrl}`,
                 });
-                const [, token1, token2] = appSource.match(/fetch\("\/api\/search\/"\.concat\("([0-9a-f]+)"\)\.concat\("([0-9a-f]+)"\)/);
+                const [, token1, token2] = appSource.match(/fetch\("\/api\/(?:search|find)\/"\.concat\("([0-9a-f]+)"\)\.concat\("([0-9a-f]+)"\)/);
                 if (!token1 || !token2) {
                     throw new Error('Error in matching the search token from the app source');
                 }
@@ -140,7 +145,7 @@ class HltbSearch {
 }
 HltbSearch.BASE_URL = 'https://howlongtobeat.com/';
 HltbSearch.DETAIL_URL = `${HltbSearch.BASE_URL}game?id=`;
-HltbSearch.SEARCH_URL = `${HltbSearch.BASE_URL}api/search`;
+HltbSearch.SEARCH_URL = `${HltbSearch.BASE_URL}api/find`; // was /search
 HltbSearch.IMAGE_URL = `${HltbSearch.BASE_URL}games/`;
 exports.HltbSearch = HltbSearch;
 //# sourceMappingURL=hltbsearch.js.map
