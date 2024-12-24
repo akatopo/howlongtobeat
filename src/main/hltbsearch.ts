@@ -11,7 +11,7 @@ const UserAgent: any = require('user-agents');
 export class HltbSearch {
   public static BASE_URL: string = 'https://howlongtobeat.com/';
   public static DETAIL_URL: string = `${HltbSearch.BASE_URL}game?id=`;
-  public static SEARCH_URL: string = `${HltbSearch.BASE_URL}api/search`;
+  public static SEARCH_URL: string = `${HltbSearch.BASE_URL}api/find`; // was /search
   public static IMAGE_URL: string = `${HltbSearch.BASE_URL}games/`;
 
   payload: any = {
@@ -28,13 +28,18 @@ export class HltbSearch {
         "sortCategory": "popular",
         "rangeCategory": "main",
         "rangeTime": {
-          "min": 0,
-          "max": 0
+          "min": null,
+          "max": null
         },
         "gameplay": {
           "perspective": "",
           "flow": "",
-          "genre": ""
+          "genre": "",
+          "difficulty": ""
+        },
+        "rangeYear": {
+          "min": "",
+          "max": ""
         },
         "modifier": ""
       },
@@ -97,7 +102,7 @@ export class HltbSearch {
       });
 
       const [ ,token1, token2] = appSource.match(
-        /fetch\("\/api\/search\/"\.concat\("([0-9a-f]+)"\)\.concat\("([0-9a-f]+)"\)/
+        /fetch\("\/api\/(?:search|find)\/"\.concat\("([0-9a-f]+)"\)\.concat\("([0-9a-f]+)"\)/
       );
 
       if (!token1 || !token2) {
