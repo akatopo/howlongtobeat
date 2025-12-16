@@ -1,13 +1,15 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.HowLongToBeatParser = exports.HowLongToBeatEntry = exports.HowLongToBeatService = void 0;
 const cheerio = require('cheerio');
 const levenshtein = require('fast-levenshtein');
 const hltbsearch_1 = require("./hltbsearch");
@@ -109,12 +111,12 @@ class HowLongToBeatParser {
         let gameplayMain = 0;
         let gameplayMainExtra = 0;
         let gameplayComplete = 0;
-        gameName = $('div[class*=GameHeader_profile_header__]')[0].children[0].data.trim();
-        imageUrl = $('div[class*=GameHeader_game_image__]')[0].children[0].attribs.src;
-        let liElements = $('div[class*=GameStats_game_times__] li');
-        const gameDescription = $('.in.back_primary.shadow_box div[class*=GameSummary_large__]').text();
+        gameName = $('div[class*=__profile_header_game] div[class*=__profile_header]')[0].children[0].data.trim();
+        imageUrl = $('div[class*=__game_image]')[0].children[0].attribs.src;
+        const liElements = $('div[class*=__game_times] li');
+        const gameDescription = $('div[class*=__content_container] div[class*=__large]').text();
         let platforms = [];
-        $('div[class*=GameSummary_profile_info__]').each(function () {
+        $('div[class*=__content_container] div[class*=__large]').each(function () {
             const metaData = $(this).text();
             if (metaData.includes('Platforms:')) {
                 platforms = metaData

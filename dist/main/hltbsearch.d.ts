@@ -7,6 +7,7 @@ declare global {
 export declare class HltbSearch {
     static BASE_URL: string;
     static DETAIL_URL: string;
+    static SEARCH_INIT_URL: string;
     static SEARCH_URL: string;
     static IMAGE_URL: string;
     payload: any;
