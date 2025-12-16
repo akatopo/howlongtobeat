@@ -121,16 +121,17 @@ export class HowLongToBeatParser {
     let gameplayMainExtra = 0;
     let gameplayComplete = 0;
 
-    gameName = $('div[class*=GameHeader_profile_header__]')[0].children[0].data.trim();
-    imageUrl = $('div[class*=GameHeader_game_image__]')[0].children[0].attribs.src;
 
-    let liElements = $('div[class*=GameStats_game_times__] li');
+    gameName = $('div[class*=__profile_header_game] div[class*=__profile_header]')[0].children[0].data.trim();
+    imageUrl = $('div[class*=__game_image]')[0].children[0].attribs.src;
+
+    const liElements = $('div[class*=__game_times] li');
     const gameDescription = $(
-      '.in.back_primary.shadow_box div[class*=GameSummary_large__]'
+      'div[class*=__content_container] div[class*=__large]'
     ).text();
 
     let platforms = [];
-    $('div[class*=GameSummary_profile_info__]').each(function () {
+    $('div[class*=__content_container] div[class*=__large]').each(function () {
       const metaData = $(this).text();
       if (metaData.includes('Platforms:')) {
         platforms = metaData
