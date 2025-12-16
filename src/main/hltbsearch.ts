@@ -11,7 +11,8 @@ const UserAgent: any = require('user-agents');
 export class HltbSearch {
   public static BASE_URL: string = 'https://howlongtobeat.com/';
   public static DETAIL_URL: string = `${HltbSearch.BASE_URL}game?id=`;
-  public static SEARCH_URL: string = `${HltbSearch.BASE_URL}api/find`; // was /search
+  public static SEARCH_INIT_URL: string = `${HltbSearch.BASE_URL}api/search/init`;
+  public static SEARCH_URL: string = `${HltbSearch.BASE_URL}api/search`;
   public static IMAGE_URL: string = `${HltbSearch.BASE_URL}games/`;
 
   payload: any = {
@@ -75,7 +76,6 @@ export class HltbSearch {
     }
   }
 
-  // This is a terrible hack that's bound to break, let's see how long it lasts
   async getSearchToken() {
     const headers = {
       'User-Agent': new UserAgent().toString(),
@@ -84,32 +84,13 @@ export class HltbSearch {
     };
 
     try {
-      const { text: pageSource } = await requestUrl({
+      const { json: tokenRes } = await requestUrl({
         method: 'GET',
         headers,
-        url: HltbSearch.BASE_URL,
+        url: `${HltbSearch.BASE_URL}api/search/init?t=${Date.now()}`,
       });
 
-      const [appUrl] = pageSource.match('_next/static/chunks/pages/_app-[0-9a-f]{16}.js');
-      if (!appUrl) {
-        throw new Error('Error in matching the app url from the page source');
-      }
-
-      const { text: appSource } = await requestUrl({
-        method: 'GET',
-        headers,
-        url: `${HltbSearch.BASE_URL}${appUrl}`,
-      });
-
-      const [ ,token1, token2] = appSource.match(
-        /fetch\("\/api\/(?:search|find)\/"\.concat\("([0-9a-f]+)"\)\.concat\("([0-9a-f]+)"\)/
-      );
-
-      if (!token1 || !token2) {
-        throw new Error('Error in matching the search token from the app source');
-      }
-
-      return `${token1}${token2}`
+      return String(tokenRes.token);
     } catch (error) {
       throw new Error(`Error in fetching the search token${error.message ? `: ${error.message}` : ''}`);
     }
@@ -117,9 +98,8 @@ export class HltbSearch {
 
   async search(query: Array<string>, signal?: AbortSignal): Promise<any> {
     const searchToken = await this.getSearchToken();
-    // Use built-in javascript URLSearchParams as a drop-in replacement to create axios.post required data param
-    let search = { ...this.payload };
-    search.searchTerms = query;
+    const search = { ...this.payload, searchTerms: query };
+
     try {
       let { json: result } = await requestUrl({
         method: 'POST',
@@ -127,9 +107,10 @@ export class HltbSearch {
           'User-Agent': new UserAgent().toString(),
           'content-type': 'application/json',
           'origin': 'https://howlongtobeat.com/',
-          'referer': 'https://howlongtobeat.com/'
+          'referer': 'https://howlongtobeat.com/',
+          'x-auth-token': searchToken,
         },
-        url: `${HltbSearch.SEARCH_URL}/${searchToken}`,
+        url: HltbSearch.SEARCH_URL,
         body: JSON.stringify(search),
       });
       return result;
