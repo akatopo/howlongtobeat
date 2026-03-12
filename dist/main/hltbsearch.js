@@ -89,7 +89,7 @@ class HltbSearch {
                 const { json: tokenRes } = yield requestUrl({
                     method: 'GET',
                     headers,
-                    url: `${HltbSearch.BASE_URL}api/search/init?t=${Date.now()}`,
+                    url: `${HltbSearch.SEARCH_INIT_URL}?t=${Date.now()}`,
                 });
                 return String(tokenRes.token);
             }
@@ -133,7 +133,7 @@ class HltbSearch {
 exports.HltbSearch = HltbSearch;
 HltbSearch.BASE_URL = 'https://howlongtobeat.com/';
 HltbSearch.DETAIL_URL = `${HltbSearch.BASE_URL}game?id=`;
-HltbSearch.SEARCH_INIT_URL = `${HltbSearch.BASE_URL}api/search/init`;
-HltbSearch.SEARCH_URL = `${HltbSearch.BASE_URL}api/search`;
+HltbSearch.SEARCH_INIT_URL = `${HltbSearch.BASE_URL}api/finder/init`;
+HltbSearch.SEARCH_URL = `${HltbSearch.BASE_URL}api/finder`;
 HltbSearch.IMAGE_URL = `${HltbSearch.BASE_URL}games/`;
 //# sourceMappingURL=hltbsearch.js.map
