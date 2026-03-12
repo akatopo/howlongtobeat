@@ -11,8 +11,8 @@ const UserAgent: any = require('user-agents');
 export class HltbSearch {
   public static BASE_URL: string = 'https://howlongtobeat.com/';
   public static DETAIL_URL: string = `${HltbSearch.BASE_URL}game?id=`;
-  public static SEARCH_INIT_URL: string = `${HltbSearch.BASE_URL}api/search/init`;
-  public static SEARCH_URL: string = `${HltbSearch.BASE_URL}api/search`;
+  public static SEARCH_INIT_URL: string = `${HltbSearch.BASE_URL}api/finder/init`;
+  public static SEARCH_URL: string = `${HltbSearch.BASE_URL}api/finder`;
   public static IMAGE_URL: string = `${HltbSearch.BASE_URL}games/`;
 
   payload: any = {
@@ -87,7 +87,7 @@ export class HltbSearch {
       const { json: tokenRes } = await requestUrl({
         method: 'GET',
         headers,
-        url: `${HltbSearch.BASE_URL}api/search/init?t=${Date.now()}`,
+        url: `${HltbSearch.SEARCH_INIT_URL}?t=${Date.now()}`,
       });
 
       return String(tokenRes.token);
