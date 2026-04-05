@@ -11,8 +11,8 @@ const UserAgent: any = require('user-agents');
 export class HltbSearch {
   public static BASE_URL: string = 'https://howlongtobeat.com/';
   public static DETAIL_URL: string = `${HltbSearch.BASE_URL}game?id=`;
-  public static SEARCH_INIT_URL: string = `${HltbSearch.BASE_URL}api/finder/init`;
-  public static SEARCH_URL: string = `${HltbSearch.BASE_URL}api/finder`;
+  public static SEARCH_INIT_URL: string = `${HltbSearch.BASE_URL}api/find/init`;
+  public static SEARCH_URL: string = `${HltbSearch.BASE_URL}api/find`;
   public static IMAGE_URL: string = `${HltbSearch.BASE_URL}games/`;
 
   payload: any = {
@@ -47,10 +47,12 @@ export class HltbSearch {
       "users": {
         "sortCategory": "postcount"
       },
+      "lists": { "sortCategory":"follows" },
       "filter": "",
       "sort": 0,
       "randomizer": 0
-    }
+    },
+    useCache: true,
   }
 
   async detailHtml(gameId: string, signal?: AbortSignal): Promise<string> {
@@ -76,11 +78,11 @@ export class HltbSearch {
     }
   }
 
-  async getSearchToken() {
+  async getSearchInit(ua: string) {    
     const headers = {
-      'User-Agent': new UserAgent().toString(),
+      'user-agent': ua,
       'origin': 'https://howlongtobeat.com/',
-      'referer': 'https://howlongtobeat.com/'
+      'referer': 'https://howlongtobeat.com/',
     };
 
     try {
@@ -90,25 +92,42 @@ export class HltbSearch {
         url: `${HltbSearch.SEARCH_INIT_URL}?t=${Date.now()}`,
       });
 
-      return String(tokenRes.token);
+      const {
+        token,
+        hpKey,
+        hpVal,
+      } = tokenRes
+
+      return {
+        token,
+        hpKey,
+        hpVal,
+      };
     } catch (error) {
       throw new Error(`Error in fetching the search token${error.message ? `: ${error.message}` : ''}`);
     }
   }
 
   async search(query: Array<string>, signal?: AbortSignal): Promise<any> {
-    const searchToken = await this.getSearchToken();
-    const search = { ...this.payload, searchTerms: query };
+    const ua = new UserAgent().toString();
+    const {
+      token,
+      hpKey,
+      hpVal
+    } = await this.getSearchInit(ua);
+    const search = { ...this.payload, searchTerms: query, [hpKey]: hpVal };
 
     try {
       let { json: result } = await requestUrl({
         method: 'POST',
         headers: {
-          'User-Agent': new UserAgent().toString(),
+          'user-agent': ua,
           'content-type': 'application/json',
           'origin': 'https://howlongtobeat.com/',
           'referer': 'https://howlongtobeat.com/',
-          'x-auth-token': searchToken,
+          'x-auth-token': token,
+          'x-hp-key': hpKey,
+          'x-hp-val': hpVal,
         },
         url: HltbSearch.SEARCH_URL,
         body: JSON.stringify(search),
