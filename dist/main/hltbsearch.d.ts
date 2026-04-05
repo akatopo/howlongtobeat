@@ -12,6 +12,10 @@ export declare class HltbSearch {
     static IMAGE_URL: string;
     payload: any;
     detailHtml(gameId: string, signal?: AbortSignal): Promise<string>;
-    getSearchToken(): Promise<string>;
+    getSearchInit(ua: string): Promise<{
+        token: any;
+        hpKey: any;
+        hpVal: any;
+    }>;
     search(query: Array<string>, signal?: AbortSignal): Promise<any>;
 }

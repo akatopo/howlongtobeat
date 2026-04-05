@@ -46,10 +46,12 @@ class HltbSearch {
                 "users": {
                     "sortCategory": "postcount"
                 },
+                "lists": { "sortCategory": "follows" },
                 "filter": "",
                 "sort": 0,
                 "randomizer": 0
-            }
+            },
+            useCache: true,
         };
     }
     detailHtml(gameId, signal) {
@@ -78,12 +80,12 @@ class HltbSearch {
             }
         });
     }
-    getSearchToken() {
+    getSearchInit(ua) {
         return __awaiter(this, void 0, void 0, function* () {
             const headers = {
-                'User-Agent': new UserAgent().toString(),
+                'user-agent': ua,
                 'origin': 'https://howlongtobeat.com/',
-                'referer': 'https://howlongtobeat.com/'
+                'referer': 'https://howlongtobeat.com/',
             };
             try {
                 const { json: tokenRes } = yield requestUrl({
@@ -91,7 +93,12 @@ class HltbSearch {
                     headers,
                     url: `${HltbSearch.SEARCH_INIT_URL}?t=${Date.now()}`,
                 });
-                return String(tokenRes.token);
+                const { token, hpKey, hpVal, } = tokenRes;
+                return {
+                    token,
+                    hpKey,
+                    hpVal,
+                };
             }
             catch (error) {
                 throw new Error(`Error in fetching the search token${error.message ? `: ${error.message}` : ''}`);
@@ -100,17 +107,20 @@ class HltbSearch {
     }
     search(query, signal) {
         return __awaiter(this, void 0, void 0, function* () {
-            const searchToken = yield this.getSearchToken();
-            const search = Object.assign(Object.assign({}, this.payload), { searchTerms: query });
+            const ua = new UserAgent().toString();
+            const { token, hpKey, hpVal } = yield this.getSearchInit(ua);
+            const search = Object.assign(Object.assign({}, this.payload), { searchTerms: query, [hpKey]: hpVal });
             try {
                 let { json: result } = yield requestUrl({
                     method: 'POST',
                     headers: {
-                        'User-Agent': new UserAgent().toString(),
+                        'user-agent': ua,
                         'content-type': 'application/json',
                         'origin': 'https://howlongtobeat.com/',
                         'referer': 'https://howlongtobeat.com/',
-                        'x-auth-token': searchToken,
+                        'x-auth-token': token,
+                        'x-hp-key': hpKey,
+                        'x-hp-val': hpVal,
                     },
                     url: HltbSearch.SEARCH_URL,
                     body: JSON.stringify(search),
@@ -133,7 +143,7 @@ class HltbSearch {
 exports.HltbSearch = HltbSearch;
 HltbSearch.BASE_URL = 'https://howlongtobeat.com/';
 HltbSearch.DETAIL_URL = `${HltbSearch.BASE_URL}game?id=`;
-HltbSearch.SEARCH_INIT_URL = `${HltbSearch.BASE_URL}api/finder/init`;
-HltbSearch.SEARCH_URL = `${HltbSearch.BASE_URL}api/finder`;
+HltbSearch.SEARCH_INIT_URL = `${HltbSearch.BASE_URL}api/find/init`;
+HltbSearch.SEARCH_URL = `${HltbSearch.BASE_URL}api/find`;
 HltbSearch.IMAGE_URL = `${HltbSearch.BASE_URL}games/`;
 //# sourceMappingURL=hltbsearch.js.map
