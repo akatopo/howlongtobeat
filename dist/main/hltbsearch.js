@@ -11,9 +11,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HltbSearch = void 0;
 const UserAgent = require('user-agents');
-// https://howlongtobeat.com/api/search/site/init
-// Request URL
-// https://howlongtobeat.com/api/search/site
 /**
  * Takes care about the http connection and response handling
  */
