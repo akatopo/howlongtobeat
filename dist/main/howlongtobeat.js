@@ -113,7 +113,7 @@ class HowLongToBeatParser {
         let gameplayComplete = 0;
         gameName = $('div[class*=__profile_header_game] div[class*=__profile_header]')[0].children[0].data.trim();
         imageUrl = $('div[class*=__game_image]')[0].children[0].attribs.src;
-        const timeGridElements = $('div[class*=__details_grid] .time_100');
+        const timeGridElements = $('[class*=__details_grid] > *');
         const gameDescription = $('div[class*=__content_container] div[class*=__large]').text();
         let platforms = [];
         $('div[class*=__content_container] div[class*=__large]').each(function () {

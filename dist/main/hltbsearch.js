@@ -11,6 +11,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HltbSearch = void 0;
 const UserAgent = require('user-agents');
+// https://howlongtobeat.com/api/search/site/init
+// Request URL
+// https://howlongtobeat.com/api/search/site
 /**
  * Takes care about the http connection and response handling
  */
@@ -143,7 +146,7 @@ class HltbSearch {
 exports.HltbSearch = HltbSearch;
 HltbSearch.BASE_URL = 'https://howlongtobeat.com/';
 HltbSearch.DETAIL_URL = `${HltbSearch.BASE_URL}game?id=`;
-HltbSearch.SEARCH_INIT_URL = `${HltbSearch.BASE_URL}api/find/init`;
-HltbSearch.SEARCH_URL = `${HltbSearch.BASE_URL}api/find`;
+HltbSearch.SEARCH_INIT_URL = `${HltbSearch.BASE_URL}api/search/site/init`;
+HltbSearch.SEARCH_URL = `${HltbSearch.BASE_URL}api/search/site`;
 HltbSearch.IMAGE_URL = `${HltbSearch.BASE_URL}games/`;
 //# sourceMappingURL=hltbsearch.js.map
