@@ -179,11 +179,17 @@ class HowLongToBeatParser {
      * @return the arithmetic median of the range
      */
     static handleRange(text) {
-        let range = text.split(' - ');
-        let d = (HowLongToBeatParser.getTime(range[0]) +
-            HowLongToBeatParser.getTime(range[1])) /
-            2;
-        return d;
+        var _a, _b;
+        const [start, end] = text.split(/\s*[-–]\s*/).map((s) => s.trim());
+        if (end === undefined) {
+            return HowLongToBeatParser.getTime(start);
+        }
+        // If the start has no unit (e.g. '5' in '5 - 12 Hours'), reuse the end's unit
+        const unit = (_b = (_a = end.match(/[a-z].*$/i)) === null || _a === void 0 ? void 0 : _a[0]) !== null && _b !== void 0 ? _b : '';
+        const startWithUnit = /[a-z]/i.test(start) ? start : `${start} ${unit}`.trim();
+        return ((HowLongToBeatParser.getTime(startWithUnit) +
+            HowLongToBeatParser.getTime(end)) /
+            2);
     }
     /**
      * Parses a string to get a number

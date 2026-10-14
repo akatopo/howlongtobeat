@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HltbSearch = void 0;
 const UserAgent = require('user-agents');
+// might also want to check these URLs at some point: https://github.com/Berkanktk/HowLongToBeatAPI/blob/a7535e5e722e2b0c75f3175851db88b06a8dd9e8/src/hltb.js#L7
 /**
  * Takes care about the http connection and response handling
  */
