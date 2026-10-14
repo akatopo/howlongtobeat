@@ -212,12 +212,18 @@ export class HowLongToBeatParser {
    * @return the arithmetic median of the range
    */
   private static handleRange(text: string): number {
-    let range: Array<string> = text.split(' - ');
-    let d: number =
-      (HowLongToBeatParser.getTime(range[0]) +
-        HowLongToBeatParser.getTime(range[1])) /
-      2;
-    return d;
+    const [start, end] = text.split(/\s*[-–]\s*/).map((s) => s.trim());
+    if (end === undefined) {
+      return HowLongToBeatParser.getTime(start);
+    }
+    // If the start has no unit (e.g. '5' in '5 - 12 Hours'), reuse the end's unit
+    const unit = end.match(/[a-z].*$/i)?.[0] ?? '';
+    const startWithUnit = /[a-z]/i.test(start) ? start : `${start} ${unit}`.trim();
+    return (
+      (HowLongToBeatParser.getTime(startWithUnit) +
+        HowLongToBeatParser.getTime(end)) /
+      2
+    );
   }
 
   /**
